@@ -1,19 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VOC-AI Recorder</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div class="container">
-    <h1>🎙️ VOC-AI Recorder</h1>
-    <button id="startBtn">Start Record</button>
-    <button id="stopBtn">Stop Record</button>
-    <ul id="recordingsList"></ul>
-  </div>
+const transcribeBtn = document.getElementById('transcribeBtn');
+const resultText = document.getElementById('resultText');
 
-  <script src="script.js"></script>
-</body>
-</html>
+let recognition;
+
+if ('webkitSpeechRecognition' in window) {
+  recognition = new webkitSpeechRecognition();
+} else if ('SpeechRecognition' in window) {
+  recognition = new SpeechRecognition();
+} else {
+  alert("Speech Recognition is not supported in this browser.");
+}
+
+if (recognition) {
+  recognition.continuous = false;
+  recognition.lang = 'id-ID'; // ganti 'en-US' kalau mau Bahasa Inggris
+  recognition.interimResults = false;
+
+  recognition.onresult = event => {
+    const transcript = event.results[0][0].transcript;
+    resultText.innerText = transcript;
+  };
+
+  recognition.onerror = event => {
+    resultText.innerText = 'Error: ' + event.error;
+  };
+
+  transcribeBtn.addEventListener('click', () => {
+    resultText.innerText = '🎤 Listening...';
+    recognition.start();
+  });
+}
