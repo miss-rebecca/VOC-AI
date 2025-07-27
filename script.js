@@ -6,29 +6,36 @@ const stopBtn = document.getElementById('stopBtn');
 const recordingsList = document.getElementById('recordingsList');
 
 startBtn.addEventListener('click', async () => {
-  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-  mediaRecorder = new MediaRecorder(stream);
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream);
 
-  chunks = [];
+    chunks = [];
 
-  mediaRecorder.ondataavailable = (e) => {
-    chunks.push(e.data);
-  };
+    mediaRecorder.ondataavailable = (e) => {
+      chunks.push(e.data);
+    };
 
-  mediaRecorder.onstop = () => {
-    const blob = new Blob(chunks, { type: 'audio/webm' });
-    const audioURL = URL.createObjectURL(blob);
-    const audio = document.createElement('audio');
-    audio.controls = true;
-    audio.src = audioURL;
-    recordingsList.appendChild(audio);
-  };
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(chunks, { type: 'audio/webm' });
+      const audioURL = URL.createObjectURL(blob);
+      const audio = document.createElement('audio');
+      audio.controls = true;
+      audio.src = audioURL;
+      recordingsList.appendChild(audio);
+    };
 
-  mediaRecorder.start();
+    mediaRecorder.start();
+    console.log("Recording started");
+  } catch (err) {
+    console.error("Error accessing microphone:", err);
+    alert("Microphone access ditolak atau tidak tersedia.");
+  }
 });
 
 stopBtn.addEventListener('click', () => {
   if (mediaRecorder && mediaRecorder.state !== 'inactive') {
     mediaRecorder.stop();
+    console.log("Recording stopped");
   }
 });
