@@ -9,10 +9,9 @@ startBtn.addEventListener('click', async () => {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     mediaRecorder = new MediaRecorder(stream);
-
     chunks = [];
 
-    mediaRecorder.ondataavailable = (e) => {
+    mediaRecorder.ondataavailable = e => {
       chunks.push(e.data);
     };
 
@@ -22,20 +21,23 @@ startBtn.addEventListener('click', async () => {
       const audio = document.createElement('audio');
       audio.controls = true;
       audio.src = audioURL;
-      recordingsList.appendChild(audio);
+
+      const li = document.createElement('li');
+      li.appendChild(audio);
+      recordingsList.appendChild(li);
     };
 
     mediaRecorder.start();
-    console.log("Recording started");
+    console.log('Recording started...');
   } catch (err) {
-    console.error("Error accessing microphone:", err);
-    alert("Microphone access ditolak atau tidak tersedia.");
+    console.error('Mic error:', err);
+    alert('Microphone access ditolak atau tidak tersedia.');
   }
 });
 
 stopBtn.addEventListener('click', () => {
   if (mediaRecorder && mediaRecorder.state !== 'inactive') {
     mediaRecorder.stop();
-    console.log("Recording stopped");
+    console.log('Recording stopped.');
   }
 });
