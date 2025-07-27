@@ -1,42 +1,34 @@
 let mediaRecorder;
-let audioChunks = [];
+let chunks = [];
 
-const startButton = document.getElementById("start");
-const stopButton = document.getElementById("stop");
-const audioPlayer = document.getElementById("audio");
+const startBtn = document.getElementById('startBtn');
+const stopBtn = document.getElementById('stopBtn');
+const recordingsList = document.getElementById('recordingsList');
 
-startButton.addEventListener("click", async () => {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    mediaRecorder = new MediaRecorder(stream);
-    audioChunks = [];
+startBtn.addEventListener('click', async () => {
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  mediaRecorder = new MediaRecorder(stream);
 
-    mediaRecorder.ondataavailable = event => {
-      if (event.data.size > 0) {
-        audioChunks.push(event.data);
-      }
-    };
+  chunks = [];
 
-    mediaRecorder.onstop = () => {
-      const blob = new Blob(audioChunks, { type: "audio/webm" });
-      const audioURL = URL.createObjectURL(blob);
-      audioPlayer.src = audioURL;
-      audioPlayer.style.display = "block";
-    };
+  mediaRecorder.ondataavailable = (e) => {
+    chunks.push(e.data);
+  };
 
-    mediaRecorder.start();
-    startButton.disabled = true;
-    stopButton.disabled = false;
-  } catch (err) {
-    alert("Akses mikrofon ditolak atau tidak tersedia.");
-    console.error(err);
-  }
+  mediaRecorder.onstop = () => {
+    const blob = new Blob(chunks, { type: 'audio/webm' });
+    const audioURL = URL.createObjectURL(blob);
+    const audio = document.createElement('audio');
+    audio.controls = true;
+    audio.src = audioURL;
+    recordingsList.appendChild(audio);
+  };
+
+  mediaRecorder.start();
 });
 
-stopButton.addEventListener("click", () => {
-  if (mediaRecorder && mediaRecorder.state !== "inactive") {
+stopBtn.addEventListener('click', () => {
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
     mediaRecorder.stop();
-    startButton.disabled = false;
-    stopButton.disabled = true;
   }
 });
