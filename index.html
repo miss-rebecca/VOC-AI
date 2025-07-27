@@ -3,19 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Voice Recorder</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Speech Notes</title>
+  <link rel="manifest" href="manifest.json" />
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    button { margin: 10px; padding: 10px 20px; font-size: 16px; }
+    #output { white-space: pre-wrap; margin-top: 20px; }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🎙️ Voice Recorder</h1>
-    <p>Press the button to start/stop recording</p>
+  <h1>Speech Recorder</h1>
+  <button onclick="start()">Start</button>
+  <button onclick="stop()">Stop</button>
+  <div id="output"></div>
 
-    <button id="startBtn">Start Recording</button>
-    <audio id="stopBtn" controls></audio>
-    <p id="status">Status: Idle</p>
-  </div>
+  <script>
+    const output = document.getElementById('output');
+    const recognition = new webkitSpeechRecognition();
+    recognition.continuous = true;
+    recognition.lang = 'id-ID';
 
-  <script src="script.js"></script>
+    recognition.onresult = (event) => {
+      const text = Array.from(event.results)
+        .map(r => r[0].transcript)
+        .join('\n');
+      output.innerText = text;
+    };
+
+    function start() {
+      recognition.start();
+    }
+
+    function stop() {
+      recognition.stop();
+    }
+  </script>
 </body>
 </html>
