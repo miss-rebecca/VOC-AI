@@ -1,21 +1,43 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VOC AI</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    button {
+      background: #800080;
+      border: none;
+      padding: 1rem 2rem;
+      color: white;
+      font-size: 1rem;
+      border-radius: 10px;
+      margin-top: 1rem;
+    }
+
+    p {
+      margin-top: 1.5rem;
+      font-size: 1.2rem;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🎙️ VOC AI Transcriber</h1>
-    <button id="transcribeBtn">Mulai Transkripsi</button>
-    <p id="resultText">Tekan tombol untuk mulai bicara.</p>
-  
+  <h1>🎙️ VOC AI Transcriber</h1>
+  <button id="transcribeBtn">Mulai Transkripsi</button>
+  <p id="resultText">Tekan tombol untuk mulai bicara.</p>
 
   <script>
     const transcribeBtn = document.getElementById('transcribeBtn');
     const resultText = document.getElementById('resultText');
+
     let recognition;
 
     if ('webkitSpeechRecognition' in window) {
@@ -23,21 +45,24 @@
     } else if ('SpeechRecognition' in window) {
       recognition = new SpeechRecognition();
     } else {
-      alert("Speech Recognition is not supported in this browser.");
+      alert("Browser tidak mendukung Speech Recognition.");
     }
 
     if (recognition) {
       recognition.continuous = true;
-      recognition.lang = 'en-US'; // bisa diganti ke 'en-US' untuk Bahasa Inggris
       recognition.interimResults = true;
+      recognition.lang = 'en-US';
 
       recognition.onresult = event => {
-        const transcript = event.results[0][0].transcript;
+        let transcript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
+        }
         resultText.innerText = transcript;
       };
 
       recognition.onerror = event => {
-        resultText.innerText = 'Error: ' + event.error;
+        resultText.innerText = '❌ Error: ' + event.error;
       };
 
       transcribeBtn.addEventListener('click', () => {
@@ -45,4 +70,6 @@
         recognition.start();
       });
     }
-  
+  </script>
+</body>
+</html>
