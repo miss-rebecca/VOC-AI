@@ -5,207 +5,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VOC AI Transcriber</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #1e1e2f;
-      color: #eee;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .container {
-      text-align: center;
-      background: #2c2c3e;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 0 12px #00000088;
-      max-width: 600px;
-      width: 100%;
-    }
-    button {
-      background-color: #6a0dad;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      margin: 10px;
-    }
-    button:hover {
-      background-color: #8a2be2;
-    }
-    #resultText {
-      white-space: pre-wrap;
-      margin-top: 20px;
-      text-align: left;
-      background-color: #111;
-      padding: 10px;
-      border-radius: 8px;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-  </style>
 </head>
 <body>
   <div class="container">
     <h1>🎙️ VOC AI Transcriber</h1>
     <button id="transcribeBtn">Mulai Transkripsi</button>
     <button id="stopBtn">Stop</button>
-    <div id="resultText">Tekan "Mulai Transkripsi" untuk mulai bicara.</div>
+    <p id="resultText">Tekan tombol untuk mulai bicara.</p>
   </div>
 
   <script>
     const transcribeBtn = document.getElementById('transcribeBtn');
     const stopBtn = document.getElementById('stopBtn');
     const resultText = document.getElementById('resultText');
+
     let recognition;
-    let isRecognizing = false;
+    let manualStop = false;
 
     if ('webkitSpeechRecognition' in window) {
       recognition = new webkitSpeechRecognition();
     } else if ('SpeechRecognition' in window) {
       recognition = new SpeechRecognition();
     } else {
-      alert("Speech Recognition is not supported in this browser.");
+      alert("Speech Recognition tidak didukung di browser ini.");
     }
 
     if (recognition) {
       recognition.continuous = true;
-      recognition.lang = 'en-US';
+      recognition.lang = 'en-US'; // bisa diganti ke 'en-US'
       recognition.interimResults = false;
 
       recognition.onresult = event => {
         const transcript = event.results[event.results.length - 1][0].transcript;
-        resultText.innerText += `\n🗣️ ${transcript}`;
-        resultText.scrollTop = resultText.scrollHeight;
+        resultText.innerText += '\n🗣️ ' + transcript;
       };
 
       recognition.onerror = event => {
-        resultText.innerText += `\n❌ Error: ${event.error}`;
+        resultText.innerText += '\n❌ Error: ' + event.error;
       };
 
       recognition.onend = () => {
-        if (isRecognizing) {
-          recognition.start(); // auto-restart
+        if (!manualStop) {
+          recognition.start(); // restart otomatis
         }
       };
 
       transcribeBtn.addEventListener('click', () => {
-        if (!isRecognizing) {
-          resultText.innerText += '\n🎤 Mendengarkan...';
-          recognition.start();
-          isRecognizing = true;<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VOC AI Transcriber</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #1e1e2f;
-      color: #eee;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .container {
-      text-align: center;
-      background: #2c2c3e;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 0 12px #00000088;
-      max-width: 600px;
-      width: 100%;
-    }
-    button {
-      background-color: #6a0dad;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      margin: 10px;
-    }
-    button:hover {
-      background-color: #8a2be2;
-    }
-    #resultText {
-      white-space: pre-wrap;
-      margin-top: 20px;
-      text-align: left;
-      background-color: #111;
-      padding: 10px;
-      border-radius: 8px;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>🎙️ VOC AI Transcriber</h1>
-    <button id="transcribeBtn">Mulai Transkripsi</button>
-    <button id="stopBtn">Stop</button>
-    <div id="resultText">Tekan "Mulai Transkripsi" untuk mulai bicara.</div>
-  </div>
-
-  <script>
-    const transcribeBtn = document.getElementById('transcribeBtn');
-    const stopBtn = document.getElementById('stopBtn');
-    const resultText = document.getElementById('resultText');
-    let recognition;
-    let isRecognizing = false;
-
-    if ('webkitSpeechRecognition' in window) {
-      recognition = new webkitSpeechRecognition();
-    } else if ('SpeechRecognition' in window) {
-      recognition = new SpeechRecognition();
-    } else {
-      alert("Speech Recognition is not supported in this browser.");
-    }
-
-    if (recognition) {
-      recognition.continuous = true;
-      recognition.lang = 'id-ID';
-      recognition.interimResults = false;
-
-      recognition.onresult = event => {
-        const transcript = event.results[event.results.length - 1][0].transcript;
-        resultText.innerText += `\n🗣️ ${transcript}`;
-        resultText.scrollTop = resultText.scrollHeight;
-      };
-
-      recognition.onerror = event => {
-        resultText.innerText += `\n❌ Error: ${event.error}`;
-      };
-
-      recognition.onend = () => {
-        if (isRecognizing) {
-          recognition.start(); // auto-restart
-        }
-      };
-
-      transcribeBtn.addEventListener('click', () => {
-        if (!isRecognizing) {
-          resultText.innerText += '\n🎤 Mendengarkan...';
-          recognition.start();
-          isRecognizing = true;
-        }
+        manualStop = false;
+        resultText.innerText = '🎤 Listening...';
+        recognition.start();
       });
 
       stopBtn.addEventListener('click', () => {
+        manualStop = true;
         recognition.stop();
-        isRecognizing = false;
-        resultText.innerText += '\n🛑 Dihentikan';
+        resultText.innerText += '\n⛔ Transkripsi dihentikan.';
       });
     }
   </script>
