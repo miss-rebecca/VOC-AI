@@ -29,7 +29,7 @@
     if (recognition) {
       recognition.continuous = true;
       recognition.lang = 'en-US'; // bisa diganti ke 'en-US' untuk Bahasa Inggris
-      recognition.interimResults = false;
+      recognition.interimResults = true;
 
       recognition.onresult = event => {
         const transcript = event.results[0][0].transcript;
